@@ -13,7 +13,7 @@
                 <a class="nav-link" href="pocetna.php">Pocetna <span class="sr-only">(current)</span></a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="korpa.php">Korpa</a>
+                <a class="nav-link" href="korpa.php">Korpa (<?php echo count($_SESSION['cart']);?>) </a>
             </li>
             <?php if ($_SESSION['user']['username'] == null) : ?>
                 <li class="nav-item">
