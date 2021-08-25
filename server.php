@@ -119,4 +119,45 @@
             return;
         }
     }
+    if(isset($_POST['process_order'])){
+        $products = explode(",",$_POST['products']);
+        $first_name = $_POST['fname'];
+        $last_name = $_POST['lname'];
+        $country = $_POST['country'];
+        $city = $_POST['city'];
+        $address = $_POST['address'];
+        $zip_code = $_POST['zip_code'];
+        $payment = $_POST['payment'];
+        $username = $_POST['username'];
+        if($payment == 1){
+            $card_owner = $_POST['cown'];
+            $cnumber = $_POST['cnum'];
+            $cvc = $_POST['cvc'];
+            $expiration = $_POST['cexp'];
+            if(is_numeric($expiration[0]) && is_numeric($expiration[1]) && is_numeric($expiration[3]) && is_numeric($expiration[4]) && $expiration[2] == "/"){
+                echo "Success";
+            }
+            else{
+                $_SESSION['error'] = "Neispravan datum isteka kartice";
+                header("location:placanje.php");
+                return;
+            }
+            if(!is_numeric($cvc) || strlen($cvc) != 3){
+                $_SESSION['error'] = "Neispravan CVC";
+                header("location:placanje.php");
+                return;
+            }
+        }
+        foreach($products as $product){
+            $query = "INSERT INTO product_orders (product_id,username,first_name,last_name,country,city,address,zip_code,payment_option) VALUES({$product},'{$username}','{$first_name}','{$last_name}','{$country}','{$city}','{$address}','{$zip_code}',{$payment})";
+            if($database->query($query) != TRUE){
+                $_SESSION['error'] = "Greska prilikom kreiranja porudzbine. Tekst greske : {$database->error}";
+                header("location:pocetna.php");
+                return;
+            }
+        }
+        $_SESSION['cart'] = [];
+        $_SESSION['message'] = "Uspesno kreirana porudzbina";
+        header("location: pocetna.php");
+    }
 ?>

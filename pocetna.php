@@ -11,7 +11,6 @@
 
 <body>
     <?php include("navigation.php"); ?>
-    <!-- <?php var_dump($_SESSION); ?> -->
     <?php if (isset($_SESSION['error'])) : ?>
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -123,8 +122,8 @@
     </div>
     <?php elseif ($_SESSION['user']['type'] == "admin") : ?>
     <h3>Admin pocetna</h3>
-
     <?php else : ?>
+
     <?php require "db.php"; ?>
     <h3 class="text-center">Gost/kupac pocetna</h3>
     <?php
@@ -145,6 +144,7 @@
                             <div class="d-flex justify-content-between h-75 flex-column">
                                 <h5> <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>"
                                         class="text-dark"><?php echo $product['name']; ?></a></h5>
+                                <small>Oglas postavio: <?php echo $product['seller'];?></small>
                                 <p class="small text-muted font-italic"><?php echo $product['description']; ?></p>
                                 <h4><?php echo number_format($product['price'], 2) . "din"; ?></h4>
                                 <ul class="list-inline small">
