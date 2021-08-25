@@ -45,4 +45,48 @@
             return;
         }
     }
+    if(isset($_POST['add_product'])){
+        $product_name = $_POST["pname"];
+        $price = $_POST['price'];
+        $username = $_POST['username'];
+        $category;
+        if($_POST['cat'] == -1){
+            $category = $_POST['catManual'];
+        }
+        else{
+            $category = strtolower($_POST['cat']);
+        }
+        $query = "INSERT INTO products (name,price,category,seller) VALUES ('${product_name}',{$price},'{$category}','{$username}')";
+        $index = 0;
+        if($database->query($query) === TRUE){
+            //dodavanje fajlova u folder sa slikama
+            $total = count($_FILES['images']['name']);
+            $product_id = $database->insert_id;
+            for($i=0; $i<$total; $i++) {
+                $tmpFilePath = $_FILES['images']['tmp_name'][$i];
+                
+                if ($tmpFilePath != ""){
+                    $newFilePath = "./media/" . $_FILES['images']['name'][$i];
+                    $query = "INSERT INTO product_images VALUES({$product_id},'{$newFilePath}')";
+                    if($database->query($query) != TRUE){
+                        $_SESSION['error'] = "Greska prilikom cuvanja slike proizvoda u bazi podataka. Tekst greske: ".$database->error;
+                        header("location:pocetna.php");
+                        return;
+                    }
+                    else{
+                        move_uploaded_file($tmpFilePath, $newFilePath);
+                        $_SESSION['message'] = "Uspesno dodavanje proizvoda u bazu podataka";
+                        header("location: pocetna.php");
+                    }
+                }
+            }
+        }
+        else{
+            
+            $_SESSION['error'] = $query;
+            // $_SESSION['error'] = "Greska prilikom dodavanja proizvoda u bazu podataka. Tekst greske: " . $database->error;
+            header("location: pocetna.php");
+            return;
+        }
+    }
 ?>
