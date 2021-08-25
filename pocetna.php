@@ -32,9 +32,8 @@
                                     unset($_SESSION["message"]); ?>.
         </div>
     <?php endif; ?>
-    <?php if ($_SESSION['user']['type'] == "kupac") : ?>
-        <h3>Kupac pocetna</h3>
-    <?php elseif ($_SESSION['user']['type'] == "prodavac") : ?>
+
+    <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
         <?php
         require "db.php";
         $query = "SELECT products.*, product_images.path FROM products INNER JOIN product_images on products.id = product_images.product_id WHERE seller = '{$_SESSION['user']['username']}' GROUP BY products.name";
@@ -67,10 +66,10 @@
                                         <td class="align-middle"><?php echo $product['id']; ?></td>
                                         <td class="align-middle"><?php echo $product['name']; ?></td>
                                         <td class="align-middle"><?php echo ucfirst($product['category']); ?></td>
-                                        
+
                                         <td class="align-middle"><?php echo $product['price']; ?></td>
-                                        <td class="align-middle"><a href = "removeproduct.php?id=<?php echo $product['id'];?>" class="btn btn-danger">Ukloni proizvod</a></td>
-                                        <td class="align-middle"><a href = "editproduct.php?id=<?php echo $product['id'];?>" class="btn btn-warning">Izmeni proizvod</a></td>
+                                        <td class="align-middle"><a href="removeproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-danger">Ukloni proizvod</a></td>
+                                        <td class="align-middle"><a href="editproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-warning">Izmeni proizvod</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -86,13 +85,17 @@
                         <input type="text" class="form-control" id="productName" name="pname">
                     </div>
                     <div class="form-group">
+                      <label for="description">Opis proizvoda</label>
+                      <textarea type="text" name="description" id="description" class="form-control" placeholder="" aria-describedby="helpId"></textarea>
+                    </div>
+                    <div class="form-group">
                         <label for="exampleFormControlSelect1">Kategorija proizvoda</label>
                         <select class="form-control" name="cat" id="exampleFormControlSelect1">
-                            <?php foreach($categories as $category):?>
-                                <option value = "<?php echo $category[0];?>"><?php echo ucfirst($category[0]);?></option>
-                                <?php endforeach;?>
-                                <option value=-1>Samostalan unos kategorije</option>
-                            </select>
+                            <?php foreach ($categories as $category) : ?>
+                                <option value="<?php echo $category[0]; ?>"><?php echo ucfirst($category[0]); ?></option>
+                            <?php endforeach; ?>
+                            <option value=-1>Samostalan unos kategorije</option>
+                        </select>
                     </div>
                     <div class="form-group" id="catManual">
                         <label for="productName">Kategorija proizvoda</label>
@@ -119,7 +122,40 @@
         <h3>Admin pocetna</h3>
 
     <?php else : ?>
-        <h3>Gost pocetna</h3>
+        <?php require "db.php"; ?>
+        <h3 class="text-center">Gost/kupac pocetna</h3>
+        <?php
+        $query = "SELECT products.*, product_images.path from products INNER JOIN product_images on product_images.product_id = products.id GROUP BY products.name";
+        $products = $database->query($query)->fetch_all(MYSQLI_ASSOC);
+        ?>
+        <div class="container">
+            <div class="pb-5 mb-4">
+                <?php foreach ($products as $product) : ?>
+                    <div class="mt-3 mb-4 mb-lg-0">
+                        <!-- Card-->
+                        <div class="card rounded shadow-sm border-0">
+                            <div class="card-body row p-4">
+                                <div class="col-md-3">
+                                    <img src="<?php echo $product['path']; ?>" alt="" class="img-fluid d-block mx-auto mb-3">
+                                </div>
+                                <div class="col-md-9">
+                                    <h5> <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="text-dark"><?php echo $product['name']; ?></a></h5>
+                                    <p class="small text-muted font-italic">Lorem ipsum dolor sit amet, consectetur adipisicing
+                                        elit.</p>
+                                    <ul class="list-inline small">
+                                        <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
+                                        <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
+                                        <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
+                                        <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
+                                        <li class="list-inline-item m-0"><i class="fa fa-star-o text-primary"></i></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
+        </div>
     <?php endif; ?>
 </body>
 

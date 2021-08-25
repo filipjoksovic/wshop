@@ -49,6 +49,7 @@
         $product_name = $_POST["pname"];
         $price = $_POST['price'];
         $username = $_POST['username'];
+        $description = $_POST['description'];
         $category;
         if($_POST['cat'] == -1){
             $category = $_POST['catManual'];
@@ -57,7 +58,7 @@
             $category = $_POST['cat'];
         }
         $category = strtolower($category);
-        $query = "INSERT INTO products (name,price,category,seller) VALUES ('${product_name}',{$price},'{$category}','{$username}')";
+        $query = "INSERT INTO products (name,price,category,seller,description) VALUES ('${product_name}',{$price},'{$category}','{$username}','{$description}')";
         $index = 0;
         if($database->query($query) === TRUE){
             //dodavanje fajlova u folder sa slikama
@@ -95,6 +96,8 @@
         $price = $_POST['price'];
         $username = $_POST['username'];
         $product_id = $_POST['product_id'];
+        $description = $_POST['description'];
+
         $category;
         if ($_POST['cat'] == -1) {
             $category = $_POST['catManual'];
@@ -103,7 +106,7 @@
         }
         $category = strtolower($category);
 
-        $query = "UPDATE products SET name = '{$product_name}',price = '{$price}', category = '{$category}' WHERE id = {$product_id}";
+        $query = "UPDATE products SET name = '{$product_name}',price = '{$price}', category = '{$category}' WHERE id = {$product_id}, description = '{$description}'";
 
         if($database->query($query) === TRUE){
             $_SESSION['message'] = "Uspesno izmenjen proizvod";
