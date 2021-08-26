@@ -242,4 +242,21 @@
             }
         }
     }
+    if(isset($_POST['add_review'])){
+        $product_id = $_POST['product_id'];
+        $username = $_POST['username'];
+        $grade = $_POST['grade'];
+        $review = $_POST['review'];
+        $query = "INSERT INTO product_reviews(product_id,username,grade,review) VALUES({$product_id},'{$username}',{$grade},'{$review}')";
+        if($database->query($query) === TRUE){
+            $_SESSION['message'] = "Uspesno ocenjen proizvod";
+            header("location:detalji_proizvoda.php?id=$product_id");
+            return;
+        }
+        else{
+            $_SESSION['error'] = "Greska prilikom ocenjivanja proizvoda. Tekst greske: $database->error";
+            header("location:detalji_proizvoda.php?id=$product_id");
+            return;
+        }
+    }
 ?>
