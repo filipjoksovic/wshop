@@ -45,14 +45,14 @@
             <h5 class="text-center">Nemate dodat ni jedan proizvod.</h5>
         <?php else : ?>
             <div class="table-responsive mt-5">
-                <table class="table ">
-                    <th>Proizvod</th>
-                    <th>Korisnik</th>
-                    <th>Ime</th>
-                    <th>Prezime</th>
-                    <th>Kolicina</th>
-                    <th>Odobri porudzbinu</th>
-                    <th>Odbij porudzbinu</th>
+                <table class="table " id="myTable2">
+                    <th onclick="sortTable(0)">Proizvod</th>
+                    <th onclick="sortTable(1)">Korisnik</th>
+                    <th onclick="sortTable(2)">Ime</th>
+                    <th onclick="sortTable(3)">Prezime</th>
+                    <th onclick="sortTable(4)">Kolicina</th>
+                    <th onclick="sortTable(5)">Odobri porudzbinu</th>
+                    <th onclick="sortTable(6)">Odbij porudzbinu</th>
                     <tbody>
                         <?php foreach ($orders as $order) : ?>
                             <!-- <?php var_dump($order); ?> -->
@@ -69,7 +69,12 @@
                                         <input type="hidden" name="order_date" value="<?php echo $order['order_date'] ?>">
                                         <input type="hidden" name="quantity" value="<?php echo $order['quantity'] ?>">
                                         <input type="hidden" name="allow_order" value="1">
-                                        <button type="submit" class="btn btn-success btn-block" <?php if ($order['status'] == 1) echo "disabled"; ?>>Odobri</button>
+                                        <?php if ($order['quantity'] > $order['stock']) : ?>
+                                            <button type="submit" class="btn btn-success btn-block" disabled data-toggle="tooltip" data-placement="top" title="Porucen broj artikala je veci od trenutnog stanja proizvoda">Odobri</button>
+
+                                        <?php else : ?>
+                                            <button type="submit" class="btn btn-success btn-block" <?php if ($order['status'] == 1) echo "disabled"; ?>>Odobri</button>
+                                        <?php endif; ?>
                                     </form>
                                 </td>
                                 <td class="align-middle">
@@ -90,6 +95,12 @@
             </div>
         <?php endif; ?>
     </div>
+    <script src="js/porudzbine.js"></script>
+    <script>
+        $(function() {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
+    </script>
 </body>
 
 </html>

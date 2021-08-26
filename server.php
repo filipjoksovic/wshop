@@ -121,6 +121,8 @@
     }
     if(isset($_POST['process_order'])){
         $products = explode(",",$_POST['products']);
+        $quantity = explode(",", $_POST['quantity']);
+
         $first_name = $_POST['fname'];
         $last_name = $_POST['lname'];
         $country = $_POST['country'];
@@ -148,8 +150,8 @@
                 return;
             }
         }
-        foreach($products as $product){
-            $query = "INSERT INTO product_orders (product_id,username,first_name,last_name,country,city,address,zip_code,payment_option) VALUES({$product},'{$username}','{$first_name}','{$last_name}','{$country}','{$city}','{$address}','{$zip_code}',{$payment})";
+        foreach($products as $index => $product){
+            $query = "INSERT INTO product_orders (product_id,username,first_name,last_name,country,city,address,zip_code,payment_option,quantity) VALUES({$product},'{$username}','{$first_name}','{$last_name}','{$country}','{$city}','{$address}','{$zip_code}',{$payment},{$quantity[$index]})";
             if($database->query($query) != TRUE){
                 $_SESSION['error'] = "Greska prilikom kreiranja porudzbine. Tekst greske : {$database->error}";
                 header("location:pocetna.php");
