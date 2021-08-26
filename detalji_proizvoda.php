@@ -93,21 +93,43 @@
                     </div>
                     <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="profile-tab">...</div>
                     <div class="tab-pane fade container w-50 my-3" id="personal_review" role="tabpanel" aria-labelledby="contact-tab">
-                        <form action="server.php" method="POST">
-                            <div class="form-group">
-                                <label for="grade">Ocena proizvoda(1-5)</label>
-                                <input type="number" min="1" max="5" name="grade" id="grade" class="form-control" placeholder="" aria-describedby="helpId">
-                            </div>
-                            <div class="form-group">
-                                <label for="review">Recenzija</label>
-                                <textarea type="text" name="review" id="review" class="form-control" placeholder="" aria-describedby="helpId"></textarea>
-                            </div>
-                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
-                            <input type="hidden" name="add_review" value="1">
-                            <input type="hidden" name="username" value="<?php echo $_SESSION['user']['username']; ?>">
-                            <button type="submit" class="btn btn-success btn-block">Oceni proizvod</button>
+                        <?php
+                        $query = "SELECT * FROM product_reviews WHERE product_id = {$product['id']} AND username = '{$_SESSION['user']['username']}'";
+                        $review = $database->query($query)->fetch_assoc();
+                        ?>
+                        <?php if ($review == null) : ?>
+                            <form action="server.php" method="POST">
+                                <div class="form-group">
+                                    <label for="grade">Ocena proizvoda(1-5)</label>
+                                    <input type="number" min="1" max="5" name="grade" id="grade" class="form-control" placeholder="" aria-describedby="helpId">
+                                </div>
+                                <div class="form-group">
+                                    <label for="review">Recenzija</label>
+                                    <textarea type="text" name="review" id="review" class="form-control" placeholder="" aria-describedby="helpId"></textarea>
+                                </div>
+                                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                <input type="hidden" name="add_review" value="1">
+                                <input type="hidden" name="username" value="<?php echo $_SESSION['user']['username']; ?>">
+                                <button type="submit" class="btn btn-success btn-block">Oceni proizvod</button>
 
-                        </form>
+                            </form>
+                        <?php else : ?>
+                            <form action="server.php" method="POST">
+                                <div class="form-group">
+                                    <label for="grade">Ocena proizvoda(1-5)</label>
+                                    <input type="number" min="1" max="5" name="grade" id="grade" class="form-control" value="<?php echo $review['grade']; ?>" placeholder="" aria-describedby="helpId">
+                                </div>
+                                <div class="form-group">
+                                    <label for="review">Recenzija</label>
+                                    <textarea type="text" name="review" id="review" class="form-control" placeholder="" aria-describedby="helpId" ><?php echo $review['review']; ?></textarea>
+                                </div>
+                                <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                <input type="hidden" name="edit_review" value="1">
+                                <input type="hidden" name="username" value="<?php echo $_SESSION['user']['username']; ?>">
+                                <button type="submit" class="btn btn-danger btn-block">Izmeni ocenu</button>
+
+                            </form>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
