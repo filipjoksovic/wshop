@@ -160,4 +160,84 @@
         $_SESSION['message'] = "Uspesno kreirana porudzbina";
         header("location: pocetna.php");
     }
+    if(isset($_POST['disable_order'])){
+        // var_dump($_POST);
+        $product_id = $_POST['product_id'];
+        $username = $_POST['username'];
+        $order_date = $_POST['order_date'];
+        $quantity = $_POST['quantity'];
+        $query = "SELECT seller FROM products WHERE id = {$product_id}";
+        $product = $database->query($query)->fetch_array(MYSQLI_ASSOC);
+        // echo $order_date;
+        // return;
+        if ($product['seller'] != $_SESSION['user']['username']) {
+            $_SESSION['error'] = "Samo vlasnik moze otkazati/odobriti porudzbinu na proizvod.";
+            header("location:pocetna.php");
+        } else {
+            $prevStatus = 0;
+            $query = "SELECT status FROM product_orders WHERE product_id = {$product_id} AND username = '{$username}' AND order_date = '{$order_date}'";
+            $status = $database->query($query)->fetch_array();
+            $prevStatus = $status[0];
+            $query = "UPDATE product_orders SET status = -1 WHERE product_id = {$product_id} AND username = '{$username}' AND order_date = '{$order_date}'";
+            if ($database->query($query) === TRUE) {
+                if($prevStatus == 1){
+                    $query = "UPDATE products SET stock = stock + {$quantity} WHERE id = {$product_id}";
+                    if($database->query($query) === TRUE){
+                        $_SESSION['message'] = "Uspesno odbijena porudzbina";
+                        header("location: porudzbine.php");
+                        return;
+                    }
+                    else{
+                        $_SESSION['error'] = "Greska prilikom izmene stanja proizvoda. Tekst greske: {$database->error}";
+                        header("location: porudzbine.php");
+                        return;
+                    }
+                }
+                else{
+                $_SESSION['message'] = "Uspesno odbijena porudzbina";
+                header("location: porudzbine.php");
+                return;
+                }
+            } else {
+                $_SESSION['error'] = "Greska prilikom odobravanja porudzbine. Tekst greske: {$database->error}";
+                header("location:porudzbine.php");
+                return;
+            }
+        }
+    }
+    if(isset($_POST['allow_order'])){
+        var_dump($_POST);
+        $product_id = $_POST['product_id'];
+        $username = $_POST['username'];
+        $order_date = $_POST['order_date'];
+        $query = "SELECT seller FROM products WHERE id = {$product_id}";
+        $quantity = $_POST['quantity'];
+        $product = $database->query($query)->fetch_array(MYSQLI_ASSOC);
+        // echo $order_date;
+        // return;
+        if($product['seller'] != $_SESSION['user']['username']){
+            $_SESSION['error'] = "Samo vlasnik moze otkazati/odobriti porudzbinu na proizvod.";
+            header("location:pocetna.php");
+        }
+        else{
+            $query = "UPDATE product_orders SET status = 1 WHERE product_id = {$product_id} AND username = '{$username}' AND order_date = '{$order_date}'";
+            if($database->query($query) === TRUE){
+                $query = "UPDATE products SET stock = stock - {$quantity} WHERE id = {$product_id}";
+                if ($database->query($query) === TRUE) {
+                    $_SESSION['message'] = "Uspesno odobrena porudzbina";
+                    header("location: porudzbine.php");
+                    return;
+                } else {
+                    $_SESSION['error'] = "Greska prilikom izmene stanja proizvoda. Tekst greske: {$database->error}";
+                    header("location: porudzbine.php");
+                    return;
+                }
+            }
+            else{
+                $_SESSION['error'] = "Greska prilikom odobravanja porudzbine. Tekst greske: {$database->error}";
+                header("location:porudzbine.php");
+                return;
+            }
+        }
+    }
 ?>

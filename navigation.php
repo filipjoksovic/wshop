@@ -12,9 +12,15 @@
             <li class="nav-item active">
                 <a class="nav-link" href="pocetna.php">Pocetna <span class="sr-only">(current)</span></a>
             </li>
-            <li class="nav-item">
-                <a class="nav-link" href="korpa.php">Korpa (<?php echo count($_SESSION['cart']);?>) </a>
-            </li>
+            <?php if ($_SESSION['user']['type'] == "korisnik") : ?>
+                <li class="nav-item">
+                    <a class="nav-link" href="korpa.php">Korpa (<?php echo count($_SESSION['cart']); ?>) </a>
+                </li>
+            <?php endif; ?>
+            <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
+                <a class="nav-link" href="porudzbine.php">Porudzbine </a>
+
+            <?php endif; ?>
             <?php if ($_SESSION['user']['username'] == null) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="login.php">Uloguj se</a>
