@@ -59,11 +59,16 @@
         }
     }
     if (isset($_GET['max'])&& $_GET['max'] != "") {
+        $count = 0;
+        $allProductCount = count($products);
         foreach ($products as $index => $product) {
             if ($product['price'] > $_GET['max']) {
+                $count++;
                 array_splice($products, $index, 1);
-                var_dump ($products);
             }
+        }
+        if($count == $allProductCount){
+            $products = [];
         }
     }
     ?>
