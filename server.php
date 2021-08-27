@@ -274,5 +274,55 @@
             header("location:detalji_proizvoda.php?id=$product_id");
             return;
         }
-}
+    }
+    if(isset($_POST['remove_user'])){
+        if ($_SESSION['user']['type'] != "admin") {
+            $_SESSION['error'] = "Nemate dozvolu da vrsite izmenu korisnika.";
+            header("location: pocetna.php");
+            return;
+        }
+        $username = $_POST['username'];
+        $query = "DELETE FROM users WHERE username = '{$username}'";
+        if($database->query($query) === TRUE){
+            $_SESSION['message'] = "Uspesno uklonjen korisnik iz baze podataka";
+        }
+        else{
+            $_SESSION['error'] = "Doslo je do greske prilikom uklanjanja koprisnika iz baze podataka";
+        }
+        header("location:pocetna.php");
+        return;
+    }
+    if(isset($_POST['edit_user'])){
+        if($_SESSION['user']['type'] != "admin"){
+            $_SESSION['error'] = "Nemate dozvolu da vrsite izmenu korisnika.";
+            header("location: pocetna.php");
+            return;
+        }
+        $first_name = $_POST['fname'];
+        $last_name = $_POST['lname'];
+        $username = $_POST['username'];
+        $email = $_POST['email'];
+        $type = $_POST['type'];
+        // first, get user we are trying to edit
+        $query = "SELECT * FROM users WHERE username = '{$username}'";
+        $userBefore = $database->query($query)->fetch_assoc();
+        //try to edit user
+        $query = "UPDATE users SET  first_name = '{$first_name}', last_name = '{$last_name}', email = '{$email}' WHERE username = '{$username}'";
+        try{
+            if($database->query($query)===true){
+                $_SESSION['message'] = "Uspesno izmenjeni podaci o korisniku";
+                header("location:pocetna.php");
+                return;
+            }
+            else{
+                throw new Exception("Greska prilikom izmene korisnika. Tekst greske: {$database->error}");
+            }
+            
+        }
+        catch(Exception $e){
+            $_SESSION['error'] = $e->getMessage();
+            header("location:pocetna.php");
+            return;
+        }
+    }
 ?>

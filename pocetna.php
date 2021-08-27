@@ -157,14 +157,24 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="type">Uloga</label>
-                                                <input type="text" name="type" id="type" class="form-control" placeholder="" aria-describedby="helpId" value="<?php echo $user['type']; ?>">
+                                                <select name = "type" id = "type" class = "form-control">
+                                                    <option value="kupac">Kupac</option>
+                                                    <option value="prodavac">Kupac</option>
+                                                    <option value="admin">Admin (ne preporucujemo)</option>
+                                                </select>
                                             </div>
                                         </div>
                                         <input type="hidden" name="edit_user">
+                                        <input type="hidden" name="username" value="<?php echo $user['username']; ?>">
+                                        <input type="hidden" name="prev_email" value="<?php echo $user['username']; ?>">
+
                                     </div>
                                     <div class="row">
                                         <div class="col-md-6">
-                                            <a class="btn btn-danger btn-block" href="delete_user.php?id=<?php echo $user['username']; ?>">Ukloni korisnika</a>
+                                            <form action="server.php">
+                                                <input type="hidden" name="username" value="<?php echo $user['username']; ?>">
+                                                <button class="btn btn-danger btn-block" type="submit">Ukloni korisnika</button>
+                                            </form>
                                         </div>
                                         <div class="col-md-6">
                                             <button class="btn btn-warning btn-block" type="submit">Izmeni korisnika</button>
