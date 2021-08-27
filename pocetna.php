@@ -54,6 +54,7 @@
                             <th>Naziv</th>
                             <th>Kategorija</th>
                             <th>Cena</th>
+                            <th>Stanje</th>
                             <th>Obrisi proizvod</th>
                             <th>Izmeni proizvod</th>
                             <tbody>
@@ -64,8 +65,8 @@
                                         <td class="align-middle"><?php echo $product['id']; ?></td>
                                         <td class="align-middle"><?php echo $product['name']; ?></td>
                                         <td class="align-middle"><?php echo ucfirst($product['category']); ?></td>
-
                                         <td class="align-middle"><?php echo $product['price']; ?></td>
+                                        <td class="align-middle"><?php echo $product['stock']; ?></td>
                                         <td class="align-middle"><a href="removeproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-danger">Ukloni proizvod</a></td>
                                         <td class="align-middle"><a href="editproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-warning">Izmeni proizvod</a></td>
                                     </tr>
@@ -103,6 +104,10 @@
                         <label for="productPrice">Cena proizvoda</label>
                         <input type="text" class="form-control" id="productPrice" name="price">
                     </div>
+                    <div class="form-group">
+                        <label for="stock">Stanje u inventaru</label>
+                        <input type="text" class="form-control" id="stock" name="stock">
+                    </div>
                     <div class="input-group mb-3">
                         <div class="custom-file">
                             <input type="file" name="images[]" class="custom-file-input" id="inputGroupFile01" multiple>
@@ -126,7 +131,7 @@
             ?>
             <div class="row">
                 <?php foreach ($users as $user) : ?>
-                    <div class="col-md-6">
+                    <div class="col-md-6 my-2">
                         <div class="card">
                             <div class="card-header">
                                 <?php echo $user['username']; ?>
@@ -157,7 +162,7 @@
                                         <div class="col-md-6">
                                             <div class="form-group">
                                                 <label for="type">Uloga</label>
-                                                <select name = "type" id = "type" class = "form-control">
+                                                <select name="type" id="type" class="form-control">
                                                     <option value="kupac">Kupac</option>
                                                     <option value="prodavac">Kupac</option>
                                                     <option value="admin">Admin (ne preporucujemo)</option>
@@ -198,12 +203,12 @@
         <div class="container">
             <div class="pb-5 mb-4 row">
                 <?php foreach ($products as $product) : ?>
-                    <div class="col-md-6 mt-3 mb-4 mb-lg-0">
+                    <div class="col-md-6 mt-3 mb-4 mb-lg-0 d-flex flex-grow-1">
                         <!-- Card-->
                         <div class="card rounded shadow-sm border-0">
                             <div class="card-body row p-4">
-                                <div class="col-md-6">
-                                    <img src="<?php echo $product['path']; ?>" alt="" class="img-fluid d-block mx-auto mb-3">
+                                <div class="col-md-6 d-flex align-center justify-content-center">
+                                    <img src="<?php echo $product['path']; ?>" alt="" class="img-fluid d-block m-auto mb-3">
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex justify-content-between h-75 flex-column">
@@ -218,16 +223,17 @@
                                             <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
                                             <li class="list-inline-item m-0"><i class="fa fa-star-o text-primary"></i></li>
                                         </ul>
-                                    </div>
-                                    <?php if ($_SESSION['user']['username'] == null) : ?>
-                                        <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Prikazi detalje</a>
-                                    <?php else : ?>
-                                        <?php if ($product['stock'] > 0) : ?>
-                                            <a href="add_to_cart.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Dodaj u korpu</a>
+                                        <?php if ($_SESSION['user']['username'] == null) : ?>
+                                            <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Prikazi detalje</a>
                                         <?php else : ?>
-                                            <button disabled="disabled" class="btn btn-danger btn-block">Nema na stanju</button>
+                                            <?php if ($product['stock'] > 0) : ?>
+                                                <a href="add_to_cart.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Dodaj u korpu</a>
+                                            <?php else : ?>
+                                                <button disabled="disabled" class="btn btn-danger btn-block">Nema na stanju</button>
+                                            <?php endif; ?>
                                         <?php endif; ?>
-                                    <?php endif; ?>
+                                    </div>
+
 
                                 </div>
                             </div>

@@ -50,6 +50,7 @@
         $price = $_POST['price'];
         $username = $_POST['username'];
         $description = $_POST['description'];
+        $stock = $_POST['stock'];
         $category;
         if($_POST['cat'] == -1){
             $category = $_POST['catManual'];
@@ -58,7 +59,7 @@
             $category = $_POST['cat'];
         }
         $category = strtolower($category);
-        $query = "INSERT INTO products (name,price,category,seller,description) VALUES ('${product_name}',{$price},'{$category}','{$username}','{$description}')";
+        $query = "INSERT INTO products (name,price,category,seller,description,stock) VALUES ('${product_name}',{$price},'{$category}','{$username}','{$description}',{$stock})";
         $index = 0;
         if($database->query($query) === TRUE){
             //dodavanje fajlova u folder sa slikama
@@ -85,7 +86,7 @@
         }
         else{
             
-            $_SESSION['error'] = $query;
+            $_SESSION['error'] = $database->error;
             // $_SESSION['error'] = "Greska prilikom dodavanja proizvoda u bazu podataka. Tekst greske: " . $database->error;
             header("location: pocetna.php");
             return;
@@ -97,6 +98,7 @@
         $username = $_POST['username'];
         $product_id = $_POST['product_id'];
         $description = $_POST['description'];
+        $stock = $_POST['stock'];
 
         $category;
         if ($_POST['cat'] == -1) {
@@ -106,7 +108,7 @@
         }
         $category = strtolower($category);
 
-        $query = "UPDATE products SET name = '{$product_name}',price = '{$price}', category = '{$category}' WHERE id = {$product_id}, description = '{$description}'";
+        $query = "UPDATE products SET name = '{$product_name}',price = '{$price}', category = '{$category}', description = '{$description}',stock = {$stock} WHERE id = {$product_id}";
 
         if($database->query($query) === TRUE){
             $_SESSION['message'] = "Uspesno izmenjen proizvod";
@@ -114,7 +116,7 @@
             return;
         }
         else{
-            $_SESSION['error'] = "Greska prilikom izmene proizvoda";
+            $_SESSION['error'] = "Greska prilikom izmene proizvoda. Tekst greske: $database->error";
             header("location:pocetna.php");
             return;
         }
@@ -323,6 +325,17 @@
             $_SESSION['error'] = $e->getMessage();
             header("location:pocetna.php");
             return;
+        }
+    }
+    if(isset($_POST['cancel_order'])){
+        $query = "DELETE FROM product_orders WHERE id = {$_POST['order_id']}";
+        if($database->query($query) === TRUE){
+            $_SESSION['message'] = "Uspesno otkazana porudzbina";
+            header("location:porudzbine.php");
+        }
+        else{
+            $_SESSION['error'] = "Greska prilikom otkazivanja porudzbine";
+            header("location:porudzbine.php");
         }
     }
 ?>

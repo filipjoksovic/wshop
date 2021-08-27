@@ -17,10 +17,8 @@
                     <a class="nav-link" href="korpa.php">Korpa (<?php echo array_sum(array_values($_SESSION['cart'])); ?>) </a>
                 </li>
             <?php endif; ?>
-            <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
                 <a class="nav-link" href="porudzbine.php">Porudzbine </a>
 
-            <?php endif; ?>
             <?php if ($_SESSION['user']['username'] == null) : ?>
                 <li class="nav-item">
                     <a class="nav-link" href="login.php">Uloguj se</a>

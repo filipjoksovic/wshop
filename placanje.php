@@ -16,7 +16,6 @@
     $sum = 0;
     $productsString = implode(",", array_keys($_SESSION['cart']));
     $quantityString = implode(",", array_values($_SESSION['cart']));
-    var_dump($productsString);
     foreach ($_SESSION['cart'] as $key => $in_cart) {
         $query = "SELECT products.price FROM products where products.id = {$key}";
         $product = $database->query($query)->fetch_assoc();

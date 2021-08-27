@@ -29,17 +29,21 @@
             </div>
             <div class="form-group">
                 <label for="description">Opis proizvoda</label>
-                <textarea type="text" name="description" id="description" class="form-control" placeholder="" aria-describedby="helpId"></textarea>
+                <textarea type="text" name="description" id="description" class="form-control" placeholder="" aria-describedby="helpId"><?php echo $product[2]; ?></textarea>
             </div>
             <div class="form-group">
                 <label for="product_price">Cena proizvoda</label>
-                <input type="text" name="price" id="product_price" class="form-control" placeholder="" value="<?php echo $product[2]; ?>">
+                <input type="text" name="price" id="product_price" class="form-control" placeholder="" value="<?php echo $product[3]; ?>">
+            </div>
+            <div class="form-group">
+                <label for="stock">Stanje</label>
+                <input type="text" name="stock" id="stock" class="form-control" placeholder="" value="<?php echo $product[4]; ?>">
             </div>
             <div class="form-group">
                 <label for="exampleFormControlSelect1">Kategorija proizvoda</label>
                 <select class="form-control" name="cat" id="exampleFormControlSelect1">
                     <?php foreach ($categories as $category) : ?>
-                        <option value="<?php echo $category[0]; ?>" <?php if (strcasecmp($category[0], $product[3]) == 0) : ?>selected<?php endif; ?>><?php echo ucfirst($category[0]); ?></option>
+                        <option value="<?php echo $category[0]; ?>" <?php if (strcasecmp($category[0], $product[5]) == 0) : ?>selected<?php endif; ?>><?php echo ucfirst($category[0]); ?></option>
                     <?php endforeach; ?>
                     <option value=-1>Samostalan unos kategorije</option>
                 </select>
