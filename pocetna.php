@@ -12,7 +12,6 @@
 <body>
     <?php include("navigation.php"); ?>
     <?php require "ProductActions.php" ?>
-    <?php var_dump($_SESSION['cart']);?>
     <?php SessionActions::renderMessages();?>
     <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
         <?php
@@ -50,7 +49,7 @@
                                         <td class="align-middle"><?php echo ucfirst($product['category']); ?></td>
                                         <td class="align-middle"><?php echo $product['price']; ?></td>
                                         <td class="align-middle"><?php echo $product['stock']; ?></td>
-                                        <td class="align-middle"><a href="removeproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-danger">Ukloni proizvod</a></td>
+                                        <td class="align-middle"><a onclick = "removeProduct(<?php echo $product['id']; ?>)" class="btn btn-danger">Ukloni proizvod</a></td>
                                         <td class="align-middle"><a href="editproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-warning">Izmeni proizvod</a></td>
                                     </tr>
                                 <?php endforeach; ?>

@@ -27,7 +27,7 @@
         }
         static function getAllProductsFromSeller($username){
             require "db.php";
-            $query = "SELECT products.*, product_images.path FROM products INNER JOIN product_images on products.id = product_images.product_id WHERE username = '{$username}'  GROUP BY products.name";
+            $query = "SELECT products.*, product_images.path FROM products INNER JOIN product_images on products.id = product_images.product_id WHERE seller = '{$username}'  GROUP BY products.name";
             $products = $database->query($query);
             if ($products != false) {
                 $products = $products->fetch_all(MYSQLI_ASSOC);

@@ -375,4 +375,29 @@
         }
         echo json_encode($response);
     }
+    if(isset($_POST['remove_product'])){
+        $product_id = $_POST['product_id'];
+        $username = $_SESSION['user']['username'];
+        $query = "SELECT * FROM products WHERE id = {$product_id}";
+        $product = $database->query($query)->fetch_assoc();
+        $response = "";
+        if ($product['seller'] != $username) {
+            $response['msg'] = "Nemate dozvolu za uklanjanje ovog proizvoda.";
+        } else {
+            $query = "SELECT * from product_images WHERE product_id = {$product_id}";
+            $images = $database->query($query)->fetch_all(MYSQLI_ASSOC);
+            foreach ($images as $image) {
+                if (is_file($image['path'])) {
+                    unlink($image['path']);
+                }
+                $query = "DELETE FROM products where id = {$product_id}";
+                if ($database->query($query) === TRUE) {
+                    $response = "Uspesno brisanje proizvoda iz baze podataka";
+                } else {
+                    $response = "Greska prilikom brisanja proizvoda iz baze podataka. Tekst greske: " . $database->error;
+                }
+            }
+            echo json_encode($response);
+        }
+    }
 ?>
