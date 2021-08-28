@@ -49,7 +49,7 @@
                                 <?php if ($_SESSION['user']['username'] == null) : ?>
                                     <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Prikazi detalje</a>
                                 <?php else : ?>
-                                    <a href="remove_from_cart.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block w-50 mx-auto ">Ukloni iz korpe</a>
+                                    <a onclick = "removeFromCart(<?php echo $product['id'];?>)" class="btn btn-primary btn-block w-50 mx-auto ">Ukloni iz korpe</a>
                                 <?php endif; ?>
                             </div>
                         </div>
@@ -57,7 +57,7 @@
                 </div>
             <?php endforeach; ?>
             <div class="d-flex w-100 justify-content-around">
-                <a href="empty_cart.php" class="mt-5 btn btn-danger btn-lg w-25 mx-auto">Isprazni korpu</a>
+                <a onclick = "emptyCart()" class="mt-5 btn btn-danger btn-lg w-25 mx-auto">Isprazni korpu</a>
                 <a href="placanje.php" class="mt-5 btn btn-primary btn-lg w-25 mx-auto">Nastavi na placanje</a>
 
             </div>

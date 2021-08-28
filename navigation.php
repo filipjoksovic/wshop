@@ -1,5 +1,5 @@
 <?php require "SessionActions.php";
-    SessionActions::startSession();
+SessionActions::startSession();
 ?>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -14,10 +14,10 @@
             </li>
             <?php if ($_SESSION['user']['type'] == "kupac") : ?>
                 <li class="nav-item">
-                    <a class="nav-link" href="korpa.php">Korpa (<?php echo array_sum(array_values($_SESSION['cart'])); ?>) </a>
+                    <a class="nav-link" href="korpa.php">Korpa (<span id="cartCount"><?php echo array_sum(array_values($_SESSION['cart'])); ?></span>) </a>
                 </li>
             <?php endif; ?>
-                <a class="nav-link" href="porudzbine.php">Porudzbine </a>
+            <a class="nav-link" href="porudzbine.php">Porudzbine </a>
 
             <?php if ($_SESSION['user']['username'] == null) : ?>
                 <li class="nav-item">
@@ -29,11 +29,11 @@
                 </li>
             <?php endif; ?>
         </ul>
-        <?php if (!str_contains($_SERVER['REQUEST_URI'],'pretraga.php') && !str_contains($_SERVER['REQUEST_URI'], 'login.php') && !str_contains($_SERVER['REQUEST_URI'], 'register.php') && $_SESSION['user']['type'] != "admin" && $_SESSION['user']['type'] != "prodavac"):?>
-        <form class="form-inline" action = "pretraga.php" method = "GET">
-            <input class="form-control mr-sm-2" type="search" placeholder="Pronadji proizvod" name = "search" aria-label="Search">
-            <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pretrazi</button>
-        </form>
-        <?php endif?>
+        <?php if (!str_contains($_SERVER['REQUEST_URI'], 'pretraga.php') && !str_contains($_SERVER['REQUEST_URI'], 'login.php') && !str_contains($_SERVER['REQUEST_URI'], 'register.php') && $_SESSION['user']['type'] != "admin" && $_SESSION['user']['type'] != "prodavac") : ?>
+            <form class="form-inline" action="pretraga.php" method="GET">
+                <input class="form-control mr-sm-2" type="search" placeholder="Pronadji proizvod" name="search" aria-label="Search">
+                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Pretrazi</button>
+            </form>
+        <?php endif ?>
     </div>
 </nav>

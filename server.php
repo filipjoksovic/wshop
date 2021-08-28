@@ -1,9 +1,7 @@
 <?php 
     require "db.php";
-    
-    if (session_status() === PHP_SESSION_NONE) {
-        session_start();
-    }
+    require "SessionActions.php";
+    SessionActions::startSession();
 
     if(isset($_POST['register'])){
         $username = $_POST['username'];
@@ -337,5 +335,44 @@
             $_SESSION['error'] = "Greska prilikom otkazivanja porudzbine";
             header("location:porudzbine.php");
         }
+    }
+    if(isset($_POST['add_to_cart'])){
+        $product_id = $_POST['product_id'];
+        $result = SessionActions::addToCart($product_id);
+        $response = [];
+        if($result == 1){
+            $response['msg'] = "Uspesno dodat proizvod u korpu";
+            $response['count'] = SessionActions::countCart();
+        }
+        else{
+            $response = "Greska prilikom dodavanja proizvoda u korpu";
+            $response['count'] = SessionActions::countCart();
+        }
+        echo json_encode($response);
+    }
+    if (isset($_POST['remove_from_cart'])) {
+        $product_id = $_POST['product_id'];
+        $result = SessionActions::removeFromCart($product_id);
+        $response = [];
+        if ($result == 1) {
+            $response['msg'] = "Uspesno uklonjen proizvod iz korpe";
+            $response['count'] = SessionActions::countCart();
+        } else {
+            $response['msg'] = "Greska prilikom uklanjanja proizvoda iz korpe";
+            $response['count'] = SessionActions::countCart();
+        }
+        echo json_encode($response);
+    }
+    if (isset($_POST['empty_cart'])) {
+        $result = SessionActions::emptyCart();
+        $response = [];
+        if ($result == 1) {
+            $response['msg'] = "Uspesno ispraznjena korpa";
+            $response['count'] = SessionActions::countCart();
+        } else {
+            $response = "Greska prilikom praznjenja korpe";
+            $response['count'] = SessionActions::countCart();
+        }
+        echo json_encode($response);
     }
 ?>

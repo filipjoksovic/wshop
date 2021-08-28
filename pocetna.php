@@ -12,6 +12,7 @@
 <body>
     <?php include("navigation.php"); ?>
     <?php require "ProductActions.php" ?>
+    <?php var_dump($_SESSION['cart']);?>
     <?php SessionActions::renderMessages();?>
     <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
         <?php
@@ -210,7 +211,7 @@
                                             <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Prikazi detalje</a>
                                         <?php else : ?>
                                             <?php if ($product['stock'] > 0) : ?>
-                                                <a href="add_to_cart.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Dodaj u korpu</a>
+                                                <a onclick = "addToCart(<?php echo $product['id'];?>)" class="btn btn-primary btn-block ">Dodaj u korpu</a>
                                             <?php else : ?>
                                                 <button disabled="disabled" class="btn btn-danger btn-block">Nema na stanju</button>
                                             <?php endif; ?>
