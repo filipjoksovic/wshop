@@ -16,10 +16,8 @@ function addToCart(product_id) {
               <strong>Uspeh!</strong> ${response.msg} 
             </div>`)
             $("#cartCount").text(response.count)
-            console.log(response)
         },
         error: function (response) {
-            console.log(response)
         }
     })
 }
@@ -42,12 +40,10 @@ function removeFromCart(product_id) {
               <strong>Uspeh!</strong> ${response.msg} 
             </div>`)
             $("#cartCount").text(response.count)
-            console.log(response)
             location.reload()
 
         },
         error: function (response) {
-            console.log(response)
         }
     })
 }
@@ -69,11 +65,9 @@ function emptyCart() {
               <strong>Uspeh!</strong> ${response.msg} 
             </div>`)
             $("#cartCount").text(0)
-            console.log(response)
             location.reload()
         },
         error: function (response) {
-            console.log(response)
         }
     })
 }
@@ -95,13 +89,11 @@ function removeProduct(product_id) {
               </button>
               <strong>Uspeh!</strong> ${response} 
             </div>`)
-            console.log(response)
             setTimeout(() => {
                 location.reload()
             }, 750);
         },
         error: function (response) {
-            console.log(response)
         }
     })
 }

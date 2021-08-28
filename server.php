@@ -1,6 +1,7 @@
 <?php 
     require "db.php";
     require "SessionActions.php";
+    require "UserActions.php";
     SessionActions::startSession();
 
     if(isset($_POST['register'])){
@@ -11,9 +12,9 @@
         $password = $_POST['password'];
         $password = md5($password);
         $type = $_POST['type'];
-        $query = "SELECT * FROM users WHERE username = '{$username}' OR email = '{$email}'";
-        $results = $database->query($query)->fetch_assoc();
-        if($results != null){
+        $user_exists = UserActions::exists($username,$email);
+        
+        if($user_exists){
             $_SESSION['error'] = "Korisnik sa ovim korisnickim imenom ili email adresom vec postoji";
             header("location: register.php");
             return;
@@ -83,9 +84,7 @@
             }
         }
         else{
-            
             $_SESSION['error'] = $database->error;
-            // $_SESSION['error'] = "Greska prilikom dodavanja proizvoda u bazu podataka. Tekst greske: " . $database->error;
             header("location: pocetna.php");
             return;
         }

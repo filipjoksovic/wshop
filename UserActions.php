@@ -11,5 +11,14 @@
                 return [];
             }
         }
+        static function exists(){
+            require "db.php";
+            $query = "SELECT * FROM users WHERE username = '{$username}' OR email = '{$email}'";
+            $results = $database->query($query);
+            if($results === FALSE){
+                return false;
+            }
+            return true;
+        }
     }
 ?>
