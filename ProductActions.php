@@ -49,8 +49,7 @@
         }
         static function getSingleProductDetails($product_id){
             require "db.php";
-            
-            $query = "SELECT products.* FROM products WHERE id = {$product_id}";
+            $query = "SELECT products.*, product_images.path FROM products INNER JOIN product_images where products.id = {$product_id} AND product_images.product_id = {$product_id} GROUP BY products.name";
             $product = $database->query($query);
             if($product != false){
                 return $product->fetch_assoc();

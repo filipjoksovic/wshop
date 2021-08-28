@@ -12,11 +12,11 @@
 <body>
     <?php require "navigation.php"; ?>
     <?php require "db.php"; ?>
+    <?php require "ProductActions.php";?>
     <?php
     $products = [];
     foreach ($_SESSION['cart'] as $key => $in_cart) {
-        $query = "SELECT products.*, product_images.path FROM products INNER JOIN product_images where products.id = {$key} AND product_images.product_id = {$key} GROUP BY products.name";
-        $product = $database->query($query)->fetch_assoc();
+        $product = ProductActions::getSingleProductDetails($key);
         $product['quantity'] = $in_cart;
         array_push($products, $product);
     }
