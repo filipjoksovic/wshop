@@ -11,6 +11,7 @@
 
 <body>
     <?php include("navigation.php"); ?>
+    <?php require "ProductActions.php" ?>
     <?php if (isset($_SESSION['error'])) : ?>
         <div class="alert alert-danger alert-dismissible fade show" role="alert">
             <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -34,10 +35,10 @@
     <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
         <?php
         require "db.php";
-        $query = "SELECT products.*, product_images.path FROM products INNER JOIN product_images on products.id = product_images.product_id WHERE seller = '{$_SESSION['user']['username']}' GROUP BY products.name";
-        $products = $database->query($query)->fetch_all(MYSQLI_ASSOC);
-        $query = "SELECT DISTINCT category from products";
-        $categories = $database->query($query)->fetch_all();
+        require "CategoryActions.php";
+        $products = ProductActions::getAllProductsFromSeller($_SESSION['user']['username']);
+        $categories = CategoryActions::getAllCategories();
+      
         ?>
         <div class="p-5 container-fluid row">
             <div class="col-md-9">
@@ -125,9 +126,7 @@
         <div class="container mt-5">
             <h3 class="text-center">Pregled i izmena korisnika</h3>
             <?php
-            require "db.php";
-            $query = "SELECT * FROM users WHERE username != 'admin'";
-            $users = $database->query($query)->fetch_all(MYSQLI_ASSOC);
+                $users = UserActions::getAllUsers();
             ?>
             <div class="row">
                 <?php foreach ($users as $user) : ?>
@@ -197,8 +196,7 @@
         <?php require "db.php"; ?>
         <h3 class="text-center">Gost/kupac pocetna</h3>
         <?php
-        $query = "SELECT products.*, product_images.path from products INNER JOIN product_images on product_images.product_id = products.id GROUP BY products.name";
-        $products = $database->query($query)->fetch_all(MYSQLI_ASSOC);
+            $products = ProductActions::getAllProducts();
         ?>
         <div class="container">
             <div class="pb-5 mb-4 row">
@@ -211,17 +209,21 @@
                                     <img src="<?php echo $product['path']; ?>" alt="" class="img-fluid d-block m-auto mb-3">
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="d-flex justify-content-between h-75 flex-column">
+                                    <div class="d-flex justify-content-between h-100 flex-column">
                                         <h5> <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="text-dark"><?php echo $product['name']; ?></a></h5>
                                         <small>Oglas postavio: <?php echo $product['seller']; ?></small>
                                         <p class="small text-muted font-italic"><?php echo $product['description']; ?></p>
                                         <h4><?php echo number_format($product['price'], 2) . "din"; ?></h4>
-                                        <ul class="list-inline small">
-                                            <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                            <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                            <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                            <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                            <li class="list-inline-item m-0"><i class="fa fa-star-o text-primary"></i></li>
+                                        <ul class="list-inline">
+                                            <?php $rate = ProductActions::getAverageRating($product['id']); ?>
+                                            <?php for ($i = 0; $i < 5; $i++) {
+                                                if ($i < $rate) {
+                                                    echo "<i class = 'fa fa-star text-primary'></i>";
+                                                } else {
+                                                    echo "<i class = 'fa fa-star-o text-primary'></i>";
+                                                }
+                                            }
+                                            ?>
                                         </ul>
                                         <?php if ($_SESSION['user']['username'] == null) : ?>
                                             <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Prikazi detalje</a>

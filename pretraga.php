@@ -13,19 +13,19 @@
     <?php require "navigation.php" ?>
     <?php
     require "db.php";
+    require "ProductActions.php";
+    require "CategoryActions.php";
     $search_Text = $_GET['search'];
-    $query = "SELECT products.*, product_images.path from products INNER JOIN product_images on product_images.product_id = products.id WHERE name LIKE '%" . $search_Text . "%' OR category LIKE '%" . $search_Text . "%' GROUP BY products.name";
-    $products = $database->query($query)->fetch_all(MYSQLI_ASSOC);
+    $products = ProductActions::getAllProducts();
+    $categories = CategoryActions::getAllCategories();
     $categories_array = [];
     //get product categories
-    $query = "SELECT DISTINCT category FROM products";
-    $categories = $database->query($query)->fetch_all(MYSQLI_NUM);
-    foreach ($categories as $category) {
-        if (!array_key_exists($category[0], $categories_array)) {
-            $categories_array[$category[0]]['title'] = $category[0];
-            $categories_array[$category[0]]['count'] = 1;
+    foreach ($products as $product) {
+        if (!array_key_exists($product['category'], $categories_array)) {
+            $categories_array[$product['category']]['title'] = $product['category'];
+            $categories_array[$product['category']]['count'] = 1;
         } else {
-            $categories_array[$category[0]]['count']++;
+            $categories_array[$product['category']]['count']++;
         }
     }
     if (isset($_GET['price-sort'])) {
@@ -36,39 +36,33 @@
             array_multisort(array_column($products, 'price'), SORT_DESC, $products);
         }
     }
-    if(isset($_GET['categories'])){
-        foreach($products as $index => $product){
-            if(!in_array($product['category'],$_GET['categories'])){
-                array_splice($products,$index,1);
+    if (isset($_GET['categories'])) {
+        foreach ($products as $index => $product) {
+            if (!in_array($product['category'], $_GET['categories'])) {
+                unset($products[$index]);
+
             }
         }
     }
-    if(isset($_GET['min']) && isset($_GET['max'])){
-        if($_GET['min'] > $_GET['max']){
+    if (isset($_GET['min']) && isset($_GET['max'])) {
+        if ($_GET['min'] > $_GET['max']) {
             $temp = $_GET['min'];
             $_GET['min'] = $_GET['max'];
             $_GET['max'] = $temp;
         }
     }
-    if(isset($_GET['min']) && $_GET['min'] != ""){
-        foreach($products as $index => $product){
-            if($product['price'] < $_GET['min']){
-                array_splice($products, $index, 1);
-                echo 'lower than min';
+    if (isset($_GET['min']) && $_GET['min'] != "") {
+        foreach ($products as $index => $product) {
+            if ($product['price'] < $_GET['min']) {
+                unset($products[$index]);
             }
         }
     }
-    if (isset($_GET['max'])&& $_GET['max'] != "") {
-        $count = 0;
-        $allProductCount = count($products);
+    if (isset($_GET['max']) && $_GET['max'] != "") {
         foreach ($products as $index => $product) {
             if ($product['price'] > $_GET['max']) {
-                $count++;
-                array_splice($products, $index, 1);
+                unset($products[$index]);
             }
-        }
-        if($count == $allProductCount){
-            $products = [];
         }
     }
     ?>
@@ -106,11 +100,11 @@
                         <div class="row">
                             <div class="col-md-6  p-3 my-3 rounded">
                                 <label for="minprice">Od</label>
-                                <input type="number" name="min" id="minprice" class="form-control" value = "<?php if (isset($_GET['min'])) echo $_GET['min'];?>">
+                                <input type="number" name="min" id="minprice" class="form-control" value="<?php if (isset($_GET['min'])) echo $_GET['min']; ?>">
                             </div>
                             <div class=" col-md-6 p-3 my-3 rounded">
                                 <label for="maxprice">Do</label>
-                                <input type="number" name="max" id="maxprice" class="form-control" value = "<?php if (isset($_GET['max'])) echo $_GET['max'];?>">
+                                <input type="number" name="max" id="maxprice" class="form-control" value="<?php if (isset($_GET['max'])) echo $_GET['max']; ?>">
                             </div>
                         </div>
                     </div>
@@ -134,12 +128,16 @@
                                             <small>Oglas postavio: <?php echo $product['seller']; ?></small>
                                             <p class="small text-muted font-italic"><?php echo $product['description']; ?></p>
                                             <h4><?php echo number_format($product['price'], 2) . "din"; ?></h4>
-                                            <ul class="list-inline small">
-                                                <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                                <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                                <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                                <li class="list-inline-item m-0"><i class="fa fa-star text-primary"></i></li>
-                                                <li class="list-inline-item m-0"><i class="fa fa-star-o text-primary"></i></li>
+                                            <ul class="list-inline">
+                                                <?php $rate = ProductActions::getAverageRating($product['id']); ?>
+                                                <?php for ($i = 0; $i < 5; $i++) {
+                                                    if ($i < $rate) {
+                                                        echo "<i class = 'fa fa-star text-primary'></i>";
+                                                    } else {
+                                                        echo "<i class = 'fa fa-star-o text-primary'></i>";
+                                                    }
+                                                }
+                                                ?>
                                             </ul>
                                         </div>
                                         <?php if ($_SESSION['user']['username'] == null) : ?>
@@ -151,7 +149,6 @@
                                                 <button disabled="disabled" class="btn btn-danger btn-block">Nema na stanju</button>
                                             <?php endif; ?>
                                         <?php endif; ?>
-
                                     </div>
                                 </div>
                             </div>
