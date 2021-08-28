@@ -1,13 +1,13 @@
-function addToCart(product_id){
+function addToCart(product_id) {
     $.ajax({
         "url": "server.php",
-        type:"POST",
-        dataType:"json",
-        data:{
-            "product_id" : product_id,
-            "add_to_cart" : 1
+        type: "POST",
+        dataType: "json",
+        data: {
+            "product_id": product_id,
+            "add_to_cart": 1
         },
-        success:function(response){
+        success: function (response) {
             $("#messages").empty()
             $("#messages").append(`<div class="alert alert-primary alert-dismissible fade show" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -18,21 +18,22 @@ function addToCart(product_id){
             $("#cartCount").text(response.count)
             console.log(response)
         },
-        error:function(response){
+        error: function (response) {
             console.log(response)
         }
     })
 }
-function removeFromCart(product_id){
+
+function removeFromCart(product_id) {
     $.ajax({
         "url": "server.php",
-        type:"POST",
-        dataType:"json",
-        data:{
-            "product_id" : product_id,
-            "remove_from_cart" : 1
+        type: "POST",
+        dataType: "json",
+        data: {
+            "product_id": product_id,
+            "remove_from_cart": 1
         },
-        success:function(response){
+        success: function (response) {
             $("#messages").empty()
             $("#messages").append(`<div class="alert alert-primary alert-dismissible fade show" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -45,20 +46,21 @@ function removeFromCart(product_id){
             location.reload()
 
         },
-        error:function(response){
+        error: function (response) {
             console.log(response)
         }
     })
 }
-function emptyCart(){
+
+function emptyCart() {
     $.ajax({
         "url": "server.php",
-        type:"POST",
-        dataType:"json",
-        data:{
-            "empty_cart" : 1
+        type: "POST",
+        dataType: "json",
+        data: {
+            "empty_cart": 1
         },
-        success:function(response){
+        success: function (response) {
             $("#messages").empty()
             $("#messages").append(`<div class="alert alert-primary alert-dismissible fade show" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -70,21 +72,22 @@ function emptyCart(){
             console.log(response)
             location.reload()
         },
-        error:function(response){
+        error: function (response) {
             console.log(response)
         }
     })
 }
-function removeProduct(product_id){
-     $.ajax({
+
+function removeProduct(product_id) {
+    $.ajax({
         "url": "server.php",
-        type:"POST",
-        dataType:"json",
-        data:{
-            "remove_product" : 1,
-            "product_id" : product_id
+        type: "POST",
+        dataType: "json",
+        data: {
+            "remove_product": 1,
+            "product_id": product_id
         },
-        success:function(response){
+        success: function (response) {
             $("#messages").empty()
             $("#messages").append(`<div class="alert alert-primary alert-dismissible fade show" role="alert">
               <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -97,8 +100,83 @@ function removeProduct(product_id){
                 location.reload()
             }, 750);
         },
-        error:function(response){
+        error: function (response) {
             console.log(response)
+        }
+    })
+}
+
+function showRates(product_id) {
+    $("#addProduct").toggle()
+    $("#productReviews").toggleClass("d-none")
+    if ($("#productReviews").hasClass("d-none")) {
+        $(event.target).text("Prikazi")
+    } else {
+        $(event.target).text("Sakrij")
+    }
+    $("#productReviews").empty()
+
+
+    $.ajax({
+        url: "server.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            "product_id": product_id,
+            "get_reviews": 1
+        },
+        success: function (response) {
+            response.forEach(review => {
+                let rate = ""
+                for (let i = 0; i < 5; i++) {
+                    if (i < review.grade) {
+                        rate += "<i class = 'fa fa-star text-primary'></i>"
+                    } else {
+                        rate += "<i class = 'fa fa-star-o text-primary'></i>"
+                    }
+                }
+                let rw = `<div class="card border-grey my-3">
+                                    <div class="card-header d-flex justify-content-between">
+                                        <div>
+                                            ${review.username} <br>
+                                            ${rate}
+                                        </div>
+                                        ${new Date(review.review_date).toLocaleDateString()}
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="card-text">${review.review}</p>
+                                    </div>
+                                </div>`
+                $("#productReviews").append(rw)
+            });
+
+        },
+        error: function (response) {
+
+        }
+    })
+}
+
+function removeRating(review_id) {
+    $.ajax({
+        url: "server.php",
+        type: "POST",
+        dataType: "json",
+        data: {
+            "review_id": review_id,
+            "remove_review": 1
+        },
+        success: function (response) {
+            $("#deleteResult").append(`<div class="alert alert-primary alert-dismissible fade show" role="alert">
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    <span class="sr-only">Close</span>
+                </button>
+                <strong>Uspesno uklonjena ocena.</strong>
+            </div>`)
+            setTimeout(() => {
+                location.reload();
+            }, 1000);
         }
     })
 }

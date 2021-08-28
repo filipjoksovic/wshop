@@ -20,9 +20,9 @@
 <body>
     <?php require "navigation.php"; ?>
     <?php
-        $images = ProductActions::getProductImages($product_id);
+    $images = ProductActions::getProductImages($product_id);
     ?>
-    <?php SessionActions::renderMessages()?>
+    <?php SessionActions::renderMessages() ?>
     <div class="container mt-5">
         <div id="carouselExampleControls" class="carousel slide bg-dark w-75 d-block mx-auto" data-ride="carousel">
             <div class="carousel-inner">
@@ -77,7 +77,7 @@
                 </li>
             </ul>
             <div class="tab-content" id="myTabContent">
-                <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="home-tab">
+                <div class="tab-pane fade show active my-3" id="description" role="tabpanel" aria-labelledby="home-tab">
                     <p>Opis proizvoda:</p>
                     <span><?php echo $product['description']; ?></span>
                 </div>
@@ -86,13 +86,8 @@
                         napravite najbolje informisanu kupovinu.</h6>
                     <div class="container">
                         <?php
-                        $query = "SELECT * FROM product_reviews WHERE product_id = $product_id AND username != '{$_SESSION['user']['username']}'";
-                        $reviews = $database->query($query);
-                        if ($reviews != false) {
-                            $reviews = $reviews->fetch_all(MYSQLI_ASSOC);
-                        } else {
-                            $reviews = [];
-                        }
+                        $reviews = ProductActions::getReviewsForProduct($product_id, $_SESSION['user']['username']);
+
                         ?>
                         <?php if (count($reviews) == 0) : ?>
                             <h6 class="text-center">Trenutno ni jedan korisnik nije ostavio ocenu na ovaj proizvod.</h6>
@@ -124,17 +119,11 @@
                 <div class="tab-pane fade container w-50 my-3" id="personal_review" role="tabpanel" aria-labelledby="contact-tab">
                     <?php
                     //First, check if user can review a certain product
-                    $can_review = false;
-                    $query = "SELECT * FROM product_orders WHERE username = '{$_SESSION['user']['username']}' AND product_id = {$product['id']} AND status = 1";
-                    $result = $database->query($query);
-                    if ($result != false) {
-                        $can_review = true;
-                    }
+                    $can_review = ProductActions::canReview($product_id, $_SESSION['user']['username']);
                     ?>
                     <?php if ($can_review) : ?>
                         <?php
-                        $query = "SELECT * FROM product_reviews WHERE product_id = {$product['id']} AND username = '{$_SESSION['user']['username']}'";
-                        $review = $database->query($query)->fetch_assoc();
+                        $review = ProductActions::getUserReview($product_id, $_SESSION['user']['username']);
                         ?>
                         <?php if ($review == null) : ?>
                             <form action="server.php" method="POST">
@@ -154,6 +143,7 @@
                             </form>
                         <?php else : ?>
                             <form action="server.php" method="POST">
+                                <div id="deleteResult"></div>
                                 <div class="form-group">
                                     <label for="grade">Ocena proizvoda(1-5)</label>
                                     <input type="number" min="1" max="5" name="grade" id="grade" class="form-control" value="<?php echo $review['grade']; ?>" placeholder="" aria-describedby="helpId">
@@ -165,7 +155,15 @@
                                 <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
                                 <input type="hidden" name="edit_review" value="1">
                                 <input type="hidden" name="username" value="<?php echo $_SESSION['user']['username']; ?>">
-                                <button type="submit" class="btn btn-danger btn-block">Izmeni ocenu</button>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <button type="submit" class="btn btn-warning btn-block">Izmeni ocenu</button>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <button type="button" onclick = "removeRating(<?php echo $review['id'];?>)" class="btn btn-danger btn-block">Ukloni ocenu</button>
+                                    </div>
+                                </div>
+
 
                             </form>
                         <?php endif; ?>

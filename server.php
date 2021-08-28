@@ -400,4 +400,29 @@
             echo json_encode($response);
         }
     }
+    if(isset($_POST['get_reviews'])){
+        require "ProductActions.php";
+        $product_id = $_POST['product_id'];
+        $reviews = ProductActions::getReviewsForProduct($product_id,null);
+        echo json_encode($reviews);
+    }
+    if(isset($_POST['remove_review'])){
+        require "ProductActions.php";
+        $review_id = $_POST['review_id'];
+        $username = $_SESSION['user']['username'];
+        $review = ProductActions::getProductReviewByID($review_id);
+        if($review != -1 && $review['id'] != $review_id){
+            $response = "Nemate dozvolu da uklonite ovu recenziju";
+        }
+        else{
+            $res = ProductActions::removeReview($review_id,$username);
+            if($res == 1){
+                $response = "Uspesno uklonjena ocena";
+            }
+            else{
+                $response = "Greska prilikom uklanjanja ocene";
+            }
+        }
+        echo json_encode($response);
+    }
 ?>

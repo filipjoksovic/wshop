@@ -26,7 +26,7 @@
     <div class="container mt-5">
         <h3 class="text-center">Pregled porudzbina</h3>
         <?php if (count($orders) == 0) : ?>
-            <h5 class="text-center">Nemate dodat ni jedan proizvod.</h5>
+            <h5 class="text-center">Nemate ni jednu porudzbinu.</h5>
         <?php else : ?>
             <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
                 <div class="table-responsive mt-5">

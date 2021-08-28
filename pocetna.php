@@ -12,14 +12,15 @@
 <body>
     <?php include("navigation.php"); ?>
     <?php require "ProductActions.php" ?>
-    <?php SessionActions::renderMessages();?>
+    <?php require "UserActions.php"; ?>
+    <?php SessionActions::renderMessages(); ?>
     <?php if ($_SESSION['user']['type'] == "prodavac") : ?>
         <?php
         require "db.php";
         require "CategoryActions.php";
         $products = ProductActions::getAllProductsFromSeller($_SESSION['user']['username']);
         $categories = CategoryActions::getAllCategories();
-      
+
         ?>
         <div class="p-5 container-fluid row">
             <div class="col-md-9">
@@ -30,7 +31,7 @@
                     <h5 class="text-center">Nemate dodat ni jedan proizvod.</h5>
                 <?php else : ?>
                     <div class="table-responsive">
-                        <table class="table ">
+                        <table class="table text-center ">
                             <th>Slika</th>
                             <th>Sifra</th>
                             <th>Naziv</th>
@@ -39,6 +40,7 @@
                             <th>Stanje</th>
                             <th>Obrisi proizvod</th>
                             <th>Izmeni proizvod</th>
+                            <th>Ocene</th>
                             <tbody>
                                 <?php foreach ($products as $product) : ?>
                                     <!-- <?php var_dump($product); ?> -->
@@ -49,8 +51,9 @@
                                         <td class="align-middle"><?php echo ucfirst($product['category']); ?></td>
                                         <td class="align-middle"><?php echo $product['price']; ?></td>
                                         <td class="align-middle"><?php echo $product['stock']; ?></td>
-                                        <td class="align-middle"><a onclick = "removeProduct(<?php echo $product['id']; ?>)" class="btn btn-danger">Ukloni proizvod</a></td>
-                                        <td class="align-middle"><a href="editproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-warning">Izmeni proizvod</a></td>
+                                        <td class="align-middle text-center"><a onclick="removeProduct(<?php echo $product['id']; ?>)" class="btn btn-danger">Ukloni</a></td>
+                                        <td class="align-middle text-center"><a href="editproduct.php?id=<?php echo $product['id']; ?>" class="btn btn-warning">Izmeni</a></td>
+                                        <td class="align-middle text-center"><a onclick="showRates(<?php echo $product['id']; ?>)" class="btn btn-primary">Prikazi</a></td>
                                     </tr>
                                 <?php endforeach; ?>
                             </tbody>
@@ -58,48 +61,53 @@
                     </div>
                 <?php endif; ?>
             </div>
-            <div class="col-md-3">
-                <h3 class="text-center">Dodaj proizvod</h3>
-                <form method="POST" action="server.php" enctype="multipart/form-data">
-                    <div class="form-group">
-                        <label for="productName">Naziv proizvoda</label>
-                        <input type="text" class="form-control" id="productName" name="pname">
-                    </div>
-                    <div class="form-group">
-                        <label for="description">Opis proizvoda</label>
-                        <textarea type="text" name="description" id="description" class="form-control" placeholder="" aria-describedby="helpId"></textarea>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleFormControlSelect1">Kategorija proizvoda</label>
-                        <select class="form-control" name="cat" id="exampleFormControlSelect1">
-                            <?php foreach ($categories as $category) : ?>
-                                <option value="<?php echo $category[0]; ?>"><?php echo ucfirst($category[0]); ?></option>
-                            <?php endforeach; ?>
-                            <option value=-1>Samostalan unos kategorije</option>
-                        </select>
-                    </div>
-                    <div class="form-group" id="catManual">
-                        <label for="productName">Kategorija proizvoda</label>
-                        <input type="text" class="form-control" id="productName" name="catManual">
-                    </div>
-                    <div class="form-group">
-                        <label for="productPrice">Cena proizvoda</label>
-                        <input type="text" class="form-control" id="productPrice" name="price">
-                    </div>
-                    <div class="form-group">
-                        <label for="stock">Stanje u inventaru</label>
-                        <input type="text" class="form-control" id="stock" name="stock">
-                    </div>
-                    <div class="input-group mb-3">
-                        <div class="custom-file">
-                            <input type="file" name="images[]" class="custom-file-input" id="inputGroupFile01" multiple>
-                            <label class="custom-file-label" for="inputGroupFile01">Odaberite slike</label>
+            <div class="col-md-3" id="colPlaceholder">
+                <div id="addProduct">
+                    <h3 class="text-center">Dodaj proizvod</h3>
+                    <form method="POST" action="server.php" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label for="productName">Naziv proizvoda</label>
+                            <input type="text" class="form-control" id="productName" name="pname">
                         </div>
-                    </div>
-                    <input type="hidden" name="username" value="<?php echo $_SESSION['user']['username']; ?>">
-                    <input type="hidden" name="add_product" value="1">
-                    <button type="submit" class="btn btn-primary btn-block">Dodaj proizvod</button>
-                </form>
+                        <div class="form-group">
+                            <label for="description">Opis proizvoda</label>
+                            <textarea type="text" name="description" id="description" class="form-control" placeholder="" aria-describedby="helpId"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleFormControlSelect1">Kategorija proizvoda</label>
+                            <select class="form-control" name="cat" id="exampleFormControlSelect1">
+                                <?php foreach ($categories as $category) : ?>
+                                    <option value="<?php echo $category[0]; ?>"><?php echo ucfirst($category[0]); ?></option>
+                                <?php endforeach; ?>
+                                <option value=-1>Samostalan unos kategorije</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="catManual">
+                            <label for="productName">Kategorija proizvoda</label>
+                            <input type="text" class="form-control" id="productName" name="catManual">
+                        </div>
+                        <div class="form-group">
+                            <label for="productPrice">Cena proizvoda</label>
+                            <input type="text" class="form-control" id="productPrice" name="price">
+                        </div>
+                        <div class="form-group">
+                            <label for="stock">Stanje u inventaru</label>
+                            <input type="text" class="form-control" id="stock" name="stock">
+                        </div>
+                        <div class="input-group mb-3">
+                            <div class="custom-file">
+                                <input type="file" name="images[]" class="custom-file-input" id="inputGroupFile01" multiple>
+                                <label class="custom-file-label" for="inputGroupFile01">Odaberite slike</label>
+                            </div>
+                        </div>
+                        <input type="hidden" name="username" value="<?php echo $_SESSION['user']['username']; ?>">
+                        <input type="hidden" name="add_product" value="1">
+                        <button type="submit" class="btn btn-primary btn-block">Dodaj proizvod</button>
+                    </form>
+                </div>
+                <div id="productReviews" class = "d-none">
+
+                </div>
             </div>
 
         </div>
@@ -107,7 +115,7 @@
         <div class="container mt-5">
             <h3 class="text-center">Pregled i izmena korisnika</h3>
             <?php
-                $users = UserActions::getAllUsers();
+            $users = UserActions::getAllUsers();
             ?>
             <div class="row">
                 <?php foreach ($users as $user) : ?>
@@ -177,7 +185,7 @@
         <?php require "db.php"; ?>
         <h3 class="text-center">Gost/kupac pocetna</h3>
         <?php
-            $products = ProductActions::getAllProducts();
+        $products = ProductActions::getAllProducts();
         ?>
         <div class="container">
             <div class="pb-5 mb-4 row">
@@ -210,7 +218,7 @@
                                             <a href="detalji_proizvoda.php?id=<?php echo $product['id']; ?>" class="btn btn-primary btn-block ">Prikazi detalje</a>
                                         <?php else : ?>
                                             <?php if ($product['stock'] > 0) : ?>
-                                                <a onclick = "addToCart(<?php echo $product['id'];?>)" class="btn btn-primary btn-block ">Dodaj u korpu</a>
+                                                <a onclick="addToCart(<?php echo $product['id']; ?>)" class="btn btn-primary btn-block ">Dodaj u korpu</a>
                                             <?php else : ?>
                                                 <button disabled="disabled" class="btn btn-danger btn-block">Nema na stanju</button>
                                             <?php endif; ?>
