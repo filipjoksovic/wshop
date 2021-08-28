@@ -1,8 +1,7 @@
 <?php
     require "db.php";
-    if(session_start() === PHP_SESSION_NONE){
-        session_start();
-    }
+    require "SessionActions.php";
+    SessionActions::startSession();
     $username = $_SESSION['user']['username'];
     $product_id = $_GET['id'];
     $query = "SELECT * FROM products WHERE id = {$product_id}";

@@ -1,7 +1,6 @@
 <?php 
-    if(session_status() === PHP_SESSION_NONE){
-        session_start();
-    }
+    require "SessionActions.php";
+    SessionActions::startSession();
     $product_id = $_GET['id'];
     if(!array_key_exists($product_id,$_SESSION['cart'])){
         $_SESSION['cart'][$product_id] = 1;

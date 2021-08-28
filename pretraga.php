@@ -68,7 +68,6 @@
     ?>
     <div class="container mt-5">
         <div class="row">
-
             <div class="col-md-4">
                 <h5 class="text-center">Filteri</h5>
                 <form action="pretraga.php" method="get" class=" w-100">

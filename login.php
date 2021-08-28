@@ -12,24 +12,14 @@
 <body>
     <?php include("navigation.php"); ?>
     <div class="container mt-5">
-        <?php if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        <?php 
+        SessionActions::startSession();
+        SessionActions::renderMessages();
         ?>
-        <?php if (isset($_SESSION['error'])) : ?>
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                    <span class="sr-only">Close</span>
-                </button>
-                <strong>Greska!</strong> <?php echo $_SESSION['error'];
-                                            unset($_SESSION["error"]); ?>.
-            </div>
-        <?php endif; ?>
+        
         <h3>Prijavljivanje na nalog</h3>
         <form method="POST" action="server.php">
             <div class="form-row">
-               
                 <div class="form-group col-md-12">
                     <label for="inputUsername">Korisnicko ime</label>
                     <input type="text" name="username" class="form-control" id="inputUsername">

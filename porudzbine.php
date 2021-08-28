@@ -12,28 +12,7 @@
 <body>
     <?php require "navigation.php"; ?>
     <?php require "db.php"; ?>
-
-    <?php if (isset($_SESSION['error'])) : ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                <span class="sr-only">Close</span>
-            </button>
-            <strong>Greska!</strong> <?php echo $_SESSION['error'];
-                                        unset($_SESSION["error"]); ?>.
-        </div>
-    <?php endif; ?>
-    <?php if (isset($_SESSION['message'])) : ?>
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                <span class="sr-only">Close</span>
-            </button>
-            <strong>Uspeh!</strong> <?php echo $_SESSION['message'];
-                                    unset($_SESSION["message"]); ?>.
-        </div>
-    <?php endif; ?>
-
+    <?php SessionActions::renderMessages();?>
     <?php
     if ($_SESSION['user']['type'] == 'prodavac') {
         $query = "SELECT product_orders.*, products.*, product_images.path FROM product_orders INNER JOIN products on products.id = product_orders.product_id INNER JOIN product_images on products.id = product_images.product_id WHERE products.seller = '{$_SESSION['user']['username']}' GROUP BY products.name";

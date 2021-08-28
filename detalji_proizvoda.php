@@ -8,9 +8,9 @@
     <?php require "style.php"; ?>
     <?php
     require "db.php";
+    require "ProductActions.php";
     $product_id = $_GET['id'];
-    $query = "SELECT products.* FROM products WHERE id = {$product_id}";
-    $product = $database->query($query)->fetch_assoc();
+    $product = ProductActions::getSingleProductDetails($product_id);
 
     ?>
 
@@ -19,31 +19,10 @@
 
 <body>
     <?php require "navigation.php"; ?>
-    <?php require "ProductActions.php"; ?>
     <?php
-    $query = "SELECT path FROM product_images WHERE product_id = $product_id";
-    $images = $database->query($query)->fetch_all();
+        $images = ProductActions::getProductImages($product_id);
     ?>
-    <?php if (isset($_SESSION['error'])) : ?>
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                <span class="sr-only">Close</span>
-            </button>
-            <strong>Greska!</strong> <?php echo $_SESSION['error'];
-                                        unset($_SESSION["error"]); ?>.
-        </div>
-    <?php endif; ?>
-    <?php if (isset($_SESSION['message'])) : ?>
-        <div class="alert alert-primary alert-dismissible fade show" role="alert">
-            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-                <span class="sr-only">Close</span>
-            </button>
-            <strong>Uspeh!</strong> <?php echo $_SESSION['message'];
-                                    unset($_SESSION["message"]); ?>.
-        </div>
-    <?php endif; ?>
+    <?php SessionActions::renderMessages()?>
     <div class="container mt-5">
         <div id="carouselExampleControls" class="carousel slide bg-dark w-75 d-block mx-auto" data-ride="carousel">
             <div class="carousel-inner">

@@ -12,9 +12,8 @@
 <body>
     <?php include("navigation.php"); ?>
     <div class="container mt-5">
-        <?php if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
+        <?php 
+        SessionActions::startSession();
         ?>
         <?php if (isset($_SESSION['error'])) : ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">

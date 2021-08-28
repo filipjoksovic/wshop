@@ -47,5 +47,24 @@
                 return [];
             }
         }
+        static function getSingleProductDetails($product_id){
+            require "db.php";
+            
+            $query = "SELECT products.* FROM products WHERE id = {$product_id}";
+            $product = $database->query($query);
+            if($product != false){
+                return $product->fetch_assoc();
+            }
+            return null;
+        }
+        static function getProductImages($product_id){
+            require "db.php";
+            $query = "SELECT path FROM product_images WHERE product_id = $product_id";
+            $images = $database->query($query);
+            if($images != false){
+                return $images->fetch_all();
+            }
+            return [];
+        }
     }
 ?>
