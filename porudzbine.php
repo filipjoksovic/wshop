@@ -122,7 +122,7 @@
                                     </div>
                                     <div class="col-md-2">
                                         <div class="mx-auto h-100 d-flex flex-grow-1 flex-column justify-content-center align-items-center">
-                                            <button onclick="location.href='detalji_proizvoda.php?id=<?php echo $product['id']; ?>'" class="my-2 flex-fill btn btn-primary btn-block align-middle text-center ">Prikazi detalje</button>
+                                            <button onclick="location.href='detalji_proizvoda.php?id=<?php echo $order['id']; ?>'" class="my-2 flex-fill btn btn-primary btn-block align-middle text-center ">Prikazi detalje</button>
 
                                             <?php if ($order['status'] == 0) : ?>
                                                 <form action="server.php" method="POST" class="flex-fill w-100">

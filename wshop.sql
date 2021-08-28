@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 26, 2021 at 05:18 PM
+-- Generation Time: Aug 28, 2021 at 11:04 AM
 -- Server version: 10.4.20-MariaDB
 -- PHP Version: 8.0.9
 
@@ -43,8 +43,12 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`id`, `name`, `description`, `price`, `stock`, `category`, `seller`) VALUES
 (4, 'Haljina', NULL, 8000, 2, 'odeca', 'petarmarkovic'),
-(5, 'Converse ranac', NULL, 3500, 2, 'ranac', 'petarmarkovic'),
-(9, 'Test proizvod', 'Test', 4000, 0, 'test', 'petarmarkovic');
+(5, 'Converse ranac', NULL, 3500, 1, 'ranac', 'petarmarkovic'),
+(9, 'Test proizvod', 'Test', 4000, 0, 'test', 'petarmarkovic'),
+(10, 'Ugaona garnitura GALIJA LUX M ', 'Ugaona garnitura, kao sto se moze videti na slici', 40000, 1, 'namestaj', 'jadrankajadic'),
+(11, 'Regal PRATO ', 'Odlican regal visokog kvaliteta za Vas dom.\r\nNapomena: Uz regal ne dolazi televizor, biljke i ostali dodaci.', 28490, 9, 'namestaj', 'jadrankajadic'),
+(12, 'Fotelja NEW YORK ', 'Fotelja New York model, odlican dodatak svakoj dnevnoj sobi.', 29000, 3, 'namestaj', 'jadrankajadic'),
+(13, 'JBL bežične bubice LIVE 300TWS (Bele)', 'JBL slusalice', 9999, 3, 'slusalice', 'milicamilicevic');
 
 -- --------------------------------------------------------
 
@@ -67,7 +71,16 @@ INSERT INTO `product_images` (`product_id`, `path`) VALUES
 (4, './media/14-60-fe81b47cK042_ZIELONY.webp'),
 (5, './media/1-f2-e475391d71027403_xxl.webp'),
 (5, './media/71027403_xxl_a1.webp'),
-(9, './media/14-4d-f6eefba7k042_green_1L.webp');
+(9, './media/14-4d-f6eefba7k042_green_1L.webp'),
+(10, './media/21028866.jpg'),
+(10, './media/csm_21028866_b0f3e53a6b.jpg'),
+(11, './media/11008777.jpg'),
+(11, './media/11008777.png'),
+(11, './media/csm_11008777_bf1cde2271.jpg'),
+(12, './media/csm_21016298_a3736cd568.jpg'),
+(13, './media/image5dc18aad78076.jpg'),
+(13, './media/image5dc18aaf6602d.png'),
+(13, './media/image5dc18ab0656a3.jpg');
 
 -- --------------------------------------------------------
 
@@ -76,6 +89,7 @@ INSERT INTO `product_images` (`product_id`, `path`) VALUES
 --
 
 CREATE TABLE `product_orders` (
+  `id` int(11) NOT NULL,
   `product_id` int(11) NOT NULL,
   `quantity` int(11) NOT NULL DEFAULT 1,
   `username` varchar(50) NOT NULL,
@@ -94,11 +108,13 @@ CREATE TABLE `product_orders` (
 -- Dumping data for table `product_orders`
 --
 
-INSERT INTO `product_orders` (`product_id`, `quantity`, `username`, `first_name`, `last_name`, `country`, `city`, `address`, `zip_code`, `payment_option`, `order_date`, `status`) VALUES
-(4, 3, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 01:05:51', 0),
-(5, 1, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 01:05:51', 0),
-(5, 2, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 03:19:57', 0),
-(4, 1, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 03:19:57', 0);
+INSERT INTO `product_orders` (`id`, `product_id`, `quantity`, `username`, `first_name`, `last_name`, `country`, `city`, `address`, `zip_code`, `payment_option`, `order_date`, `status`) VALUES
+(1, 4, 3, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 01:05:51', 0),
+(2, 5, 1, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 01:05:51', 1),
+(3, 5, 2, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 03:19:57', 0),
+(4, 4, 1, 'filipjoksovic', 'Filip', 'Joksovic', 'Srbija', 'Kragujevac', 'Episkopa Save 17', '31000', 0, '2021-08-26 03:19:57', 0),
+(6, 13, 1, 'jovicastevic', 'Jovica', 'Stevic', 'Srbija', 'Cacak', 'Kneza Lazara 2', '32210', 0, '2021-08-27 23:52:46', 0),
+(7, 11, 1, 'jovicastevic', 'Petar', 'Jovanovic', 'Srbija', 'Valjevo', 'Karadjorjeva 3', '30000', 1, '2021-08-27 23:53:34', 1);
 
 -- --------------------------------------------------------
 
@@ -142,8 +158,17 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`username`, `first_name`, `last_name`, `email`, `password`, `type`) VALUES
 ('admin', 'Admin', 'Admin', 'admin@admin.com', '21232f297a57a5a743894a0e4a801fc3', 'admin'),
-('filipjoksovic', 'Filip', 'Joksovic', 'filipjoksovic1@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'kupac'),
-('petarmarkovic', 'Petar', 'Markovic', 'petarmarkovic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'admiprodavac');
+('aleksandrapetrovic', 'Aleksandra', 'Petrovic', 'aleksandrapetrovic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prodavac'),
+('filipfilipovic', 'Filip', 'Filipovic', 'filipfilipovic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prodavac'),
+('filipjoksovic', 'Filip', 'Joksovic', 'test@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'kupac'),
+('jadrankajadic', 'Jadranka', 'Jadic', 'jadrankajadic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prodavac'),
+('jelenamilenkovic', 'Jelena', 'Milenkovic', 'jelenamilenkovic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prodavac'),
+('jovicastevic', 'Jovica', 'Stevic', 'jovicastevic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'kupac'),
+('lazarlazic', 'Lazar', 'Lazic', 'lazarlazic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'kupac'),
+('milanmiljkovic', 'Milan', 'Miljkovic', 'milanmiljkovic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'kupac'),
+('milicamilicevic', 'Milica', 'Milicevic', 'milicamilicevic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prodavac'),
+('pericamikic', 'Perica', 'Mikic', 'pericamikic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'kupac'),
+('petarmarkovic', 'Petar', 'Markovic', 'petarmarkovic@gmail.com', '5f4dcc3b5aa765d61d8327deb882cf99', 'prodavac');
 
 --
 -- Indexes for dumped tables
@@ -166,6 +191,7 @@ ALTER TABLE `product_images`
 -- Indexes for table `product_orders`
 --
 ALTER TABLE `product_orders`
+  ADD PRIMARY KEY (`id`),
   ADD KEY `username` (`username`),
   ADD KEY `product_id` (`product_id`);
 
@@ -180,7 +206,8 @@ ALTER TABLE `product_reviews`
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
-  ADD PRIMARY KEY (`username`);
+  ADD PRIMARY KEY (`username`),
+  ADD UNIQUE KEY `email` (`email`);
 
 --
 -- AUTO_INCREMENT for dumped tables
@@ -190,7 +217,13 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `product_orders`
+--
+ALTER TABLE `product_orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- Constraints for dumped tables
